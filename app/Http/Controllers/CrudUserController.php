@@ -2,29 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Hash;
-use Session;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
-/**
- * CRUD User controller
- */
 class CrudUserController extends Controller
 {
-
-    /**
-     * Login page
-     */
     public function login()
     {
         return view('crud_user.login');
     }
 
-    /**
-     * User submit form login
-     */
     public function authUser(Request $request)
     {
         $request->validate([
@@ -35,24 +24,17 @@ class CrudUserController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('list')
-                ->withSuccess('Signed in');
+            return redirect()->intended('list')->with('success', 'Signed in');
         }
 
-        return redirect("login")->withSuccess('Login details are not valid');
+        return redirect("login")->with('error', 'Login details are not valid');
     }
 
-    /**
-     * Registration page
-     */
     public function createUser()
     {
         return view('crud_user.create');
     }
 
-    /**
-     * User submit form register
-     */
     public function postUser(Request $request)
     {
         $request->validate([
@@ -68,32 +50,26 @@ class CrudUserController extends Controller
             'password' => Hash::make($data['password'])
         ]);
 
-        return redirect("login");
+        return redirect("login")->with('success', 'User created successfully');
     }
 
-    /**
-     * View user detail page
-     */
-    public function readUser(Request $request) {
+    public function readUser(Request $request)
+    {
         $user_id = $request->get('id');
         $user = User::find($user_id);
 
-        return view('crud_user.read', ['messi' => $user]);
+        return view('crud_user.read', ['user' => $user]);
     }
 
-    /**
-     * Delete user by id
-     */
-    public function deleteUser(Request $request) {
+    public function deleteUser(Request $request)
+    {
         $user_id = $request->get('id');
-        $user = User::destroy($user_id);
+        $user = User::find($user_id);
+        $user->delete();
 
-        return redirect("list")->withSuccess('You have signed-in');
+        return redirect("list")->with('success', 'User deleted successfully');
     }
 
-    /**
-     * Form update user page
-     */
     public function updateUser(Request $request)
     {
         $user_id = $request->get('id');
@@ -102,48 +78,37 @@ class CrudUserController extends Controller
         return view('crud_user.update', ['user' => $user]);
     }
 
-    /**
-     * Submit form update user
-     */
     public function postUpdateUser(Request $request)
     {
-        $input = $request->all();
-
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,id,'.$input['id'],
+            'email' => 'required|email|unique:users,email,' . $request->input('id'),
             'password' => 'required|min:6',
         ]);
 
-       $user = User::find($input['id']);
-       $user->name = $input['name'];
-       $user->email = $input['email'];
-       $user->password = $input['password'];
-       $user->save();
+        $user = User::find($request->input('id'));
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
 
-        return redirect("list")->withSuccess('You have signed-in');
+        return redirect("list")->with('success', 'User updated successfully');
     }
 
-    /**
-     * List of users
-     */
     public function listUser()
     {
-        if(Auth::check()){
+        if (Auth::check()) {
             $users = User::all();
             return view('crud_user.list', ['users' => $users]);
         }
 
-        return redirect("login")->withSuccess('You are not allowed to access');
+        return redirect("login")->with('error', 'You are not allowed to access');
     }
 
-    /**
-     * Sign out
-     */
-    public function signOut() {
-        Session::flush();
+    public function signOut()
+    {
         Auth::logout();
 
-        return Redirect('login');
+        return redirect("login");
     }
 }
