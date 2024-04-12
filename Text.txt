@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 Oke
+=======
+oke la
+>>>>>>> pull-conflict/3-acc2
