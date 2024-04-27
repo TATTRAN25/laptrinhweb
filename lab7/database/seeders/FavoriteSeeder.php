@@ -28,5 +28,20 @@ class FavoriteSeeder extends Seeder
             'favorite_name' => 'Xem phim',
             'favorite_description' => 'Tôi rất thích xem phim hoạt hình',
         ]);
+
+        DB::table('favorities')->insert([
+            'favorite_name' => 'Hay ho',
+            'favorite_description' => 'Hay thích ho, ho lao, ho phổi,...',
+        ]);
+
+        DB::table('favorities')->insert([
+            'favorite_name' => 'Thông minh',
+            'favorite_description' => 'Thích thông minh',
+        ]);
+
+        DB::table('favorities')->insert([
+            'favorite_name' => 'Thích code',
+            'favorite_description' => 'code htmlol, code javarorant, code cssgo,..',
+        ]);
     }
 }

@@ -22,5 +22,20 @@ class UserFavoriteSeeder extends Seeder
             'user_id' => 1,
             'favorite_id' => 2
         ]);
+
+        DB::table('user_favorite')->insert([
+            'user_id' => 2,
+            'favorite_id' => 4
+        ]);
+
+        DB::table('user_favorite')->insert([
+            'user_id' => 2,
+            'favorite_id' => 5
+        ]);
+
+        DB::table('user_favorite')->insert([
+            'user_id' => 2,
+            'favorite_id' => 6
+        ]);
     }
 }

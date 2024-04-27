@@ -1,4 +1,4 @@
-php artisan migrate  
+
 php artisan db:seed --class=DatabaseSeeder
 php artisan db:seed --class=PostsSeeder
 php artisan db:seed --class=FavoriteSeeder
