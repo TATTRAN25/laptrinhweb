@@ -1,4 +1,3 @@
-
 @extends('dashboard')
 
 @section('content')
