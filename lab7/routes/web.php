@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
-
+use App\Http\Controllers\FavoriteController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,11 +30,10 @@ Route::post('update', [CrudUserController::class, 'postUpdateUser'])->name('user
 
 Route::get('list', [CrudUserController::class, 'listUser'])->name('user.list');
 
-Route::get('favoriteList', [CrudUserController::class, 'favoriteList'])->name('user.favoriteList');
-
-Route::get('postList', [CrudUserController::class, 'postList'])->name('user.postList');
-
 Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
+
+
+Route::get('danh-sach-so-thich', [FavoriteController::class, 'list'])->name('favorite.list');
 
 Route::get('/', function () {
     return view('welcome');

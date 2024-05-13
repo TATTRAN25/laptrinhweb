@@ -110,19 +110,41 @@ class CrudUserController extends Controller
     /**
      * Delete user by id
      */
-    public function deleteUser(Request $request)
-    {
+    // public function deleteUser(Request $request)
+    // {
 
-        $user_id = $request->get('id');
-        $user = User::find($user_id);
-        if ($user->posts->count() > 0 || $user->favorities->count() > 0) {
-            return redirect("list")->withError('You can not delete this user');
-        }
-        $user = User::destroy($user_id);
+    //     $user_id = $request->get('id');
+    //     $user = User::find($user_id);
+    //     if ($user->posts->count() > 0 || $user->favorities->count() > 0) {
+    //         return redirect("list")->withError('You can not delete this user');
+    //     }
+    //     $user = User::destroy($user_id);
         
-        return redirect("list")->withSuccess('You have signed-in');
-    }
+    //     return redirect("list")->withSuccess('You have signed-in');
+    // }
 
+    public function deleteUser(Request $request) {
+        $user_id = $request->get('id');
+
+        $isDelete = false;
+        //Check existing post
+        $post = Posts::where('user_id', '=', $user_id)->first();
+
+        //Check existing favorite
+        $favorities = User::find($user_id)->favorities;
+
+        if (empty ($post) && $favorities->isEmpty()) {
+            $isDelete = true;
+        }
+
+        if ($isDelete) {
+            $user = User::destroy($user_id);
+            return redirect("list")->withSuccess('Delete successful');
+        } else {
+            return redirect("list")->withSuccess('Delete not ok');
+        }
+
+    }
     /**
      * Form update user page
      */
@@ -187,7 +209,7 @@ class CrudUserController extends Controller
     {
         if (Auth::check()) {
             // $users = User::all();//Lay tat ca du lieu trong ban user
-            $users = User::paginate(2);
+            $users = User::paginate(10);
             return view('crud_user.list', ['users' => $users]); //->with('i',(request()->input('page',1)-1)*2);
         }
 
